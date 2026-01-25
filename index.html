@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Học Tập Future 2026</title>
+    <style>
+        :root {
+            --bg: #0f172a; --glass: rgba(255, 255, 255, 0.1);
+            --toan: linear-gradient(135deg, #ff0080, #7928ca);
+            --ly: linear-gradient(135deg, #0070f3, #00dfd8);
+            --hoa: linear-gradient(135deg, #f59e0b, #d97706);
+            --sinh: linear-gradient(135deg, #10b981, #059669);
+            --su: linear-gradient(135deg, #6366f1, #4f46e5);
+            --anh: linear-gradient(135deg, #ec4899, #be185d);
+            --van: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            --tin: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: white; margin: 0; overflow-x: hidden; }
+        .hidden { display: none !important; }
+        .background-blob { position: fixed; width: 500px; height: 500px; background: #3b82f6; filter: blur(150px); opacity: 0.15; z-index: -1; border-radius: 50%; top: -10%; right: -10%; }
+        #auth-screen { height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .auth-box { background: var(--glass); backdrop-filter: blur(20px); padding: 40px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); width: 350px; text-align: center; }
+        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: none; background: rgba(255,255,255,0.05); color: white; outline: none; transition: 0.3s; }
+        header { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .btn { padding: 12px 25px; border-radius: 15px; border: none; cursor: pointer; font-weight: bold; color: white; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        .card { height: 180px; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; cursor: pointer; transition: 0.4s; position: relative; overflow: hidden; }
+        .card:hover { transform: translateY(-10px) rotate(2deg); }
+        .sub-nav { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
+        .sub-tab { flex: 1; padding: 25px; border-radius: 20px; text-align: center; background: var(--glass); cursor: pointer; font-size: 20px; font-weight: bold; border: 1px solid transparent; transition: 0.3s; }
+        .sub-tab.active { border-color: #00dfd8; background: rgba(0, 223, 216, 0.1); }
+        .item-box { background: var(--glass); padding: 20px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border-left: 10px solid #fff; margin-bottom: 10px; }
+        
+       
+        .comic-card { background: var(--glass); border-radius: 20px; overflow: hidden; cursor: pointer; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .comic-card:hover { transform: scale(1.05); border-color: #00dfd8; }
+        .comic-thumb { width: 100%; height: 200px; object-fit: cover; }
+        .comic-info { padding: 15px; text-align: center; font-weight: bold; }
+
+        .admin-panel { background: rgba(255,255,255,0.03); border: 2px dashed #444; padding: 30px; border-radius: 30px; margin-bottom: 40px; }
+        #viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; display: none; flex-direction: column; align-items: center; padding-top: 50px; }
+        .view-content { width: 85%; height: 75%; border-radius: 20px; overflow: hidden; background: #000; position: relative; }
+        video, iframe, img { width: 100%; height: 100%; border: none; }
+     
+        #comic-embed-area { width: 100%; height: 600px; margin-top: 30px; border-radius: 20px; overflow: hidden; display: none; }
+    
+        .video-card { 
+            background: var(--glass); 
+            border-radius: 20px; 
+            overflow: hidden; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            display: flex;
+            flex-direction: column;
+        }
+        .video-card:hover { 
+            transform: scale(1.05); 
+            border-color: #0070f3; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .video-thumb { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: cover; 
+            background: #000;
+        }
+        .video-info { 
+            padding: 15px; 
+            text-align: center; 
+            font-weight: bold; 
+            font-size: 16px;
+        }
+    
+        #video-embed-area { 
+            width: 100%; 
+            height: 600px; 
+            margin-top: 30px; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            display: none; 
+            background: #000;
+            border: 2px solid rgba(0, 112, 243, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-blob"></div>
+
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h1 style="margin-bottom: 30px; background: var(--toan); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">S-EDUCATION</h1>
+            <div id="auth-inputs">
+                <input type="text" id="l-user" placeholder="Tài khoản">
+                <input type="password" id="l-pass" placeholder="Mật khẩu">
+                <button id="auth-btn" class="btn" style="background: var(--toan); width: 100%; margin-top: 20px;" onclick="login()">BẮT ĐẦU HỌC</button>
+                <p id="toggle-link" style="margin-top:15px; font-size:14px">Chưa có tài khoản? <a href="#" onclick="toggleAuth(true)" style="color:#ff0080">Đăng ký ngay</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-app" class="hidden">
+        <header>
+            <div id="user-display" style="font-weight: bold;"></div>
+            <button class="btn" style="background: #ef4444;" onclick="location.reload()">Đăng xuất</button>
+        </header>
+
+        <div class="container">
+            <div id="subject-screen">
+                <h2 style="text-align: center; margin-bottom: 40px; font-size: 2.5rem;">CHỌN MÔN HỌC</h2>
+                <div class="grid">
+                    <div class="card" style="background: var(--toan)" onclick="enterSub('Toán Học')">Toán Học</div>
+                    <div class="card" style="background: var(--ly)" onclick="enterSub('Vật Lý')">Vật Lý</div>
+                    <div class="card" style="background: var(--hoa)" onclick="enterSub('Hóa Học')">Hóa Học</div>
+                    <div class="card" style="background: var(--sinh)" onclick="enterSub('Sinh Học')">Sinh Học</div>
+                    <div class="card" style="background: var(--su)" onclick="enterSub('Lịch Sử')">Lịch Sử</div>
+                    <div class="card" style="background: var(--anh)" onclick="enterSub('Tiếng Anh')">Tiếng Anh</div>
+                    <div class="card" style="background: var(--van)" onclick="enterSub('Ngữ Văn')">Ngữ Văn</div>
+                    <div class="card" style="background: var(--tin)" onclick="enterSub('Tin Học')">Tin Học</div>
+                </div>
+            </div>
+
+            <div id="detail-screen" class="hidden">
+                <button class="btn" style="background: #475569; margin-bottom: 30px;" onclick="goHome()">← Quay lại</button>
+                <h1 id="cur-sub-name" style="text-align: center; font-size: 3rem; margin-top: 0;"></h1>
+                
+                <div class="sub-nav">
+                    <div id="tab-video" class="sub-tab active" onclick="switchMode('video')">🎬 KHO VIDEO</div>
+                    <div id="tab-comic" class="sub-tab" onclick="switchMode('comic')">📖 TRUYỆN & TÀI LIỆU</div>
+                </div>
+
+                <div id="admin-area" class="admin-panel hidden">
+                    <input type="text" id="add-name" placeholder="Tên bài học / Tập truyện">
+                    <div style="display:flex; gap:10px;"><input type="file" id="add-file"><input type="text" id="add-link" placeholder="Hoặc link Youtube"></div>
+                    <button class="btn" style="background: #10b981; width: 100%; margin-top: 15px;" onclick="saveItem()">LƯU VÀO HỆ THỐNG</button>
+                </div>
+
+                <div id="item-display" class="grid"></div>
+                <div id="video-embed-area"></div>
+
+                <div id="comic-embed-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="viewer" onclick="closeViewer()">
+        <button class="btn" style="background: #ef4444; margin-bottom: 20px;">ĐÓNG TRÌNH XEM [X]</button>
+        <div class="view-content" id="view-inside" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjKN1CzR8RImuL5BjNpc9kt2v3_cJGRRF21y0R9KkNsydqq_-2atx4Elnxxi2P5V-MPg/exec";
+
+        const defaultComics = [
+            { 
+                sub: 'Sinh Học', //thay theo tên môn
+                name: 'Hành trình của nước và muối khoáng', //tên hiển thị truyện 
+                path: 'https://heyzine.com/flip-book/23700947cb.html', //link truyện
+                thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_EoWll5jq4zIcwRK5e-NgqGiOI6t1llOt7w&s', //link ảnh bìa
+                mode: 'comic'
+            },
+            { 
+                sub: 'Sinh Học', 
+                name: 'Giấc mơ của những tia sáng', 
+                path: 'https://heyzine.com/flip-book/f4b1e0165a.html', 
+                thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcCRvyNcO9548h6xjBHp8x2QHepqshuyhVAw&s',
+                mode: 'comic'
+            },
+            { 
+                sub: 'Vật Lý', 
+                name: 'Truyện Vật Lý Thế Giới', 
+                path: 'https://heyzine.com/flip-book/f4b1e0165a.html', 
+                thumb: 'https://i.pinimg.com/236x/08/87/e6/0887e65fc252c25b3df48a8cb4af95ed.jpg',
+                mode: 'comic'
+            }
+        ];
+
+        let db = JSON.parse(localStorage.getItem('future_edu_db')) || [];
+        let curUser = null;
+        let curSub = ''; 
+        let curMode = 'video';
+
+        function toggleAuth(isReg) {
+            const container = document.getElementById('auth-inputs');
+            if(isReg) {
+                container.innerHTML = `
+                    <h1 style="background: var(--ly); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ĐĂNG KÝ MỚI</h1>
+                    <input type="text" id="r-user" placeholder="Tên tài khoản">
+                    <input type="password" id="r-pass" placeholder="Mật khẩu">
+                    <button id="auth-btn" class="btn" style="background: var(--ly); width: 100%; margin-top: 20px;" onclick="handleRegister()">TẠO TÀI KHOẢN</button>
+                    <p style="margin-top:15px; font-size:14px">Đã có nick? <a href="#" onclick="location.reload()" style="color:#00dfd8">Đăng nhập</a></p>
+                `;
+            }
+        }
+
+        async function handleRegister() {
+            const u = document.getElementById('r-user').value.trim();
+            const p = document.getElementById('r-pass').value.trim();
+            if(!u || !p) return alert("Vui lòng điền đầy đủ!");
+            const btn = document.getElementById('auth-btn');
+            btn.innerText = "ĐANG XỬ LÝ...";
+            btn.disabled = true;
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "register", u, p }),
+                    redirect: "follow"
+                });
+                const result = await response.text();
+                if (result.includes("exists")) { alert("Tài khoản đã tồn tại"); } 
+                else { alert("Đăng ký thành công!"); location.reload(); }
+            } catch (err) { alert("Thông báo: Đang đồng bộ..."); location.reload(); }
+        }
+
+        async function login() {
+            const u = document.getElementById('l-user').value.trim();
+            const p = document.getElementById('l-pass').value.trim();
+            if(u === 'admin' && p === '123') return showApp({u: 'admin', role: 'admin'});
+            const btn = document.getElementById('auth-btn');
+            btn.innerText = "ĐANG XÁC THỰC...";
+            btn.disabled = true;
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "login", u, p }),
+                    redirect: "follow"
+                });
+                const data = await response.json();
+                if (data && data.u) { showApp(data); } 
+                else { alert("Sai tài khoản!"); }
+            } catch (err) { alert("Lỗi xác thực!"); } 
+            finally { btn.disabled = false; btn.innerText = "BẮT ĐẦU HỌC"; }
+        }
+
+        function showApp(user) {
+            curUser = user;
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('user-display').innerText = (user.role === 'admin' ? "💎 Admin: " : "👤 Học viên: ") + user.u;
+            if(user.role === 'admin') document.getElementById('admin-area').classList.remove('hidden');
+        }
+
+        function enterSub(name) {
+            curSub = name;
+            document.getElementById('subject-screen').classList.add('hidden');
+            document.getElementById('detail-screen').classList.remove('hidden');
+            document.getElementById('cur-sub-name').innerText = name;
+            switchMode('video');
+        }
+
+        function goHome() {
+            document.getElementById('subject-screen').classList.remove('hidden');
+            document.getElementById('detail-screen').classList.add('hidden');
+            document.getElementById('comic-embed-area').style.display = 'none'; // Tắt khung truyện
+            document.getElementById('comic-embed-area').innerHTML = '';
+        }
+
+        function switchMode(mode) {
+            curMode = mode;
+            document.getElementById('tab-video').classList.toggle('active', mode === 'video');
+            document.getElementById('tab-comic').classList.toggle('active', mode === 'comic');
+            document.getElementById('comic-embed-area').style.display = 'none'; // Ẩn khung truyện khi đổi tab
+            renderItems();
+        }
+
+        function saveItem() {
+            if(curUser.role !== 'admin') return alert("Chỉ Admin!");
+            const name = document.getElementById('add-name').value;
+            const file = document.getElementById('add-file').files[0];
+            const link = document.getElementById('add-link').value;
+            if(!name) return alert("Nhập tên!");
+            let path = file ? (curMode === 'video' ? 'video/' : 'truyen/') + file.name : link;
+            db.push({ id: Date.now(), name, path, mode: curMode, sub: curSub });
+            localStorage.setItem('future_edu_db', JSON.stringify(db));
+            renderItems();
+        }
+
+        function renderItems() {
+            const area = document.getElementById('item-display');
+            area.innerHTML = "";
+            
+            const allData = [...defaultComics, ...db];
+            const filtered = allData.filter(i => i.sub === curSub && i.mode === curMode);
+            
+            if (curMode === 'comic') {
+                area.className = "grid"; 
+                filtered.forEach(item => {
+                    const thumb = item.thumb || 'https://img.freepik.com/free-vector/open-book-vector-clipart-design_53876-126231.jpg';
+                    area.innerHTML += `
+                        <div class="comic-card" onclick="openComicInline('${item.path}')">
+                            <img src="${thumb}" class="comic-thumb">
+                            <div class="comic-info">${item.name}</div>
+                        </div>`;
+                });
+            } else {
+                area.className = "";
+                filtered.forEach(item => {
+                    area.innerHTML += `
+                        <div class="item-box" style="border-color: #0070f3">
+                            <span><b>${item.name}</b></span>
+                            <button class="btn btn-glow" style="background: var(--glass); border: 1px solid rgba(255,255,255,0.2)" onclick="view('${item.path}')">MỞ XEM</button>
+                        </div>`;
+                });
+            }
+        }
+
+        function openComicInline(path) {
+            const embedArea = document.getElementById('comic-embed-area');
+            embedArea.style.display = 'block';
+            embedArea.innerHTML = `<iframe src="${path}" width="100%" height="100%" allowfullscreen></iframe>`;
+            embedArea.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function view(path) {
+            const modal = document.getElementById('viewer');
+            const inside = document.getElementById('view-inside');
+            modal.style.display = 'flex';
+            if(path.includes('youtube.com') || path.includes('youtu.be')) {
+                let id = path.includes('v=') ? path.split('v=')[1].split('&')[0] : path.split('/').pop();
+                inside.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+            } else {
+                inside.innerHTML = `<iframe src="${path}" allowfullscreen></iframe>`;
+            }
+        }
+
+        function closeViewer() {
+            document.getElementById('viewer').style.display='none';
+            document.getElementById('view-inside').innerHTML='';
+        }
+
+        window.onkeydown = (e) => { if(e.key === "Escape") closeViewer(); };
+    </script>
+</body>
+</html>
