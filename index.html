@@ -162,19 +162,20 @@
                 mode: 'comic'
             },
             { 
-                sub: 'Sinh Học', 
+                sub: 'Sinh Học', //thay theo tên môn
+                name: 'Hành trình của nước và muối khoáng', //tên hiển thị vd
+                path: 'https://youtu.be/WRfB9Yyd9bU', //link vd
+                thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_EoWll5jq4zIcwRK5e-NgqGiOI6t1llOt7w&s', //link ảnh bìa
+                mode: 'video'
+            },
+            { 
+                sub: 'Vật Lý', 
                 name: 'Giấc mơ của những tia sáng', 
                 path: 'https://heyzine.com/flip-book/f4b1e0165a.html', 
                 thumb: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcCRvyNcO9548h6xjBHp8x2QHepqshuyhVAw&s',
                 mode: 'comic'
-            },
-            { 
-                sub: 'Vật Lý', 
-                name: 'Truyện Vật Lý Thế Giới', 
-                path: 'https://heyzine.com/flip-book/f4b1e0165a.html', 
-                thumb: 'https://i.pinimg.com/236x/08/87/e6/0887e65fc252c25b3df48a8cb4af95ed.jpg',
-                mode: 'comic'
             }
+            
         ];
 
         let db = JSON.parse(localStorage.getItem('future_edu_db')) || [];
