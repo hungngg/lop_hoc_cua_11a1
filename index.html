@@ -84,9 +84,130 @@
             background: #000;
             border: 2px solid rgba(0, 112, 243, 0.3);
         }
+        /* Hiệu ứng Màn hình chào */
+#splash-screen {
+    position: fixed;
+    inset: 0;
+    background: #0f172a;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease, visibility 1s;
+}
+
+.splash-content {
+    text-align: center;
+}
+
+.splash-logo {
+    font-size: 4rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #ff0080, #7928ca, #0070f3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: pulseGlow 2s infinite alternate;
+    letter-spacing: 5px;
+}
+
+.splash-loader {
+    width: 200px;
+    height: 2px;
+    background: rgba(255,255,255,0.1);
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.splash-loader::after {
+    content: '';
+    position: absolute;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: #00dfd8;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes pulseGlow {
+    from { filter: drop-shadow(0 0 10px rgba(255,0,128,0.5)); transform: scale(1); }
+    to { filter: drop-shadow(0 0 30px rgba(0,112,243,0.8)); transform: scale(1.05); }
+}
+
+@keyframes loading {
+    100% { left: 100%; }
+}
+
+/* Hiệu ứng xuất hiện cho các phần tử chính */
+.fade-in {
+    animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Làm cho các card xuất hiện lần lượt */
+.grid .card {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+.grid .card:nth-child(1) { animation-delay: 0.1s; }
+.grid .card:nth-child(2) { animation-delay: 0.2s; }
+.grid .card:nth-child(3) { animation-delay: 0.3s; }
+.grid .card:nth-child(4) { animation-delay: 0.4s; }
+.grid .card:nth-child(5) { animation-delay: 0.5s; }
+.grid .card:nth-child(6) { animation-delay: 0.6s; }
+.grid .card:nth-child(7) { animation-delay: 0.7s; }
+.grid .card:nth-child(8) { animation-delay: 0.8s; }
+/* Hiệu ứng cho thông báo cảm ơn */
+#thank-you-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.9);
+    z-index: 10000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.thank-you-box {
+    background: var(--glass);
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgba(0, 223, 216, 0.5);
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 0 30px rgba(0, 223, 216, 0.2);
+    animation: fadeIn 0.5s ease;
+}
+
+.thank-you-box h2 {
+    background: var(--ly);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.thank-you-box p {
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin-bottom: 25px;
+}
     </style>
 </head>
 <body>
+    <div id="splash-screen">
+    <div class="splash-content">
+        <div class="splash-logo">S-EDUCATION</div>
+        <div class="splash-loader"></div>
+        <p>Kiến tạo tương lai 2026</p>
+    </div>
+</div>
     <div class="background-blob"></div>
 
     <div id="auth-screen">
@@ -149,7 +270,13 @@
         <button class="btn" style="background: #ef4444; margin-bottom: 20px;">ĐÓNG TRÌNH XEM [X]</button>
         <div class="view-content" id="view-inside" onclick="event.stopPropagation()"></div>
     </div>
-
+<div id="thank-you-modal">
+    <div class="thank-you-box">
+        <h2>TUYỆT VỜI! 🌟</h2>
+        <p id="thank-you-msg">Chúc mừng bạn đã hoàn thành nội dung này. Mỗi trang sách, mỗi phút phim đều là một bước tiến tới tương lai!</p>
+        <button class="btn" style="background: var(--ly); width: 100%;" onclick="closeThankYou()">TIẾP TỤC HÀNH TRÌNH</button>
+    </div>
+</div>
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyjKN1CzR8RImuL5BjNpc9kt2v3_cJGRRF21y0R9KkNsydqq_-2atx4Elnxxi2P5V-MPg/exec";
 
@@ -240,7 +367,24 @@
             }
             
         ];
+            // Xử lý màn hình chào khi trang tải xong
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        splash.style.visibility = 'hidden';
+        
+        // Thêm class hiệu ứng cho màn hình đăng nhập
+        document.querySelector('.auth-box').classList.add('fade-in');
+    }, 2500); // Hiển thị màn hình chào trong 2.5 giây
+});
 
+// Chỉnh sửa hàm showApp để thêm hiệu ứng mượt mà khi vào trang chủ
+const originalShowApp = showApp;
+showApp = function(user) {
+    originalShowApp(user);
+    document.getElementById('subject-screen').classList.add('fade-in');
+};
         let db = JSON.parse(localStorage.getItem('future_edu_db')) || [];
         let curUser = null;
         let curSub = ''; 
@@ -298,13 +442,55 @@
             finally { btn.disabled = false; btn.innerText = "BẮT ĐẦU HỌC"; }
         }
 
-        function showApp(user) {
-            curUser = user;
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('user-display').innerText = (user.role === 'admin' ? "💎 Admin: " : "👤 Học viên: ") + user.u;
-            if(user.role === 'admin') document.getElementById('admin-area').classList.remove('hidden');
-        }
+       function showApp(user) {
+    curUser = user;
+    document.getElementById('auth-screen').classList.add('hidden');
+    document.getElementById('main-app').classList.remove('hidden');
+    
+    // Hiển thị tên người dùng trên header
+    const userDisplayName = (user.role === 'admin' ? "💎 Admin: " : "👤 Học viên: ") + user.u;
+    document.getElementById('user-display').innerText = userDisplayName;
+
+    // Hiển thị khu vực quản trị nếu là Admin
+    if(user.role === 'admin') document.getElementById('admin-area').classList.remove('hidden');
+
+    // --- ĐOẠN MÃ THÊM MỚI: LỜI CHÚC MỞ ĐẦU ---
+    const welcomeMsg = user.role === 'admin' 
+        ? `Chào mừng Quản trị viên <b>${user.u}</b> quay trở lại hệ thống!` 
+        : `Chào mừng <b>${user.u}</b>! Chúc bạn có một buổi học thật hiệu quả tại S-EDUCATION.`;
+    
+    // Sử dụng lại Modal "Thank You" nhưng thay đổi nội dung để làm lời chào
+    const thankBox = document.querySelector('.thank-you-box');
+    const oldTitle = thankBox.querySelector('h2').innerText;
+    const oldMsg = document.getElementById('thank-you-msg').innerHTML;
+    const oldBtn = thankBox.querySelector('.btn').innerText;
+
+    // Đổi nội dung sang lời chào
+    thankBox.querySelector('h2').innerText = "XIN CHÀO! 👋";
+    document.getElementById('thank-you-msg').innerHTML = welcomeMsg;
+    thankBox.querySelector('.btn').innerText = "BẮT ĐẦU NGAY";
+
+    // Hiển thị modal chào mừng
+    document.getElementById('thank-you-modal').style.display = 'flex';
+
+    // Khôi phục lại nội dung gốc của modal sau khi đóng để không ảnh hưởng đến tính năng "Cảm ơn" sau này
+    const btnAction = thankBox.querySelector('.btn');
+    const originalClose = closeThankYou;
+    
+    closeThankYou = function() {
+        document.getElementById('thank-you-modal').style.display = 'none';
+        // Trả lại nội dung cũ cho modal
+        thankBox.querySelector('h2').innerText = oldTitle;
+        document.getElementById('thank-you-msg').innerHTML = oldMsg;
+        thankBox.querySelector('.btn').innerText = oldBtn;
+        // Reset hàm về nguyên bản
+        closeThankYou = originalClose;
+    };
+    setTimeout(closeThankYou, 3500); // Tự động đóng lời chào sau 3.5 giây
+    // ------------------------------------------
+
+    document.getElementById('subject-screen').classList.add('fade-in');
+}
 
         function enterSub(name) {
             curSub = name;
@@ -389,10 +575,35 @@
             }
         }
 
-        function closeViewer() {
-            document.getElementById('viewer').style.display='none';
-            document.getElementById('view-inside').innerHTML='';
-        }
+       // Hàm hiển thị thông báo cảm ơn
+function showThankYou() {
+    const modal = document.getElementById('thank-you-modal');
+    modal.style.display = 'flex';
+}
+
+// Hàm đóng thông báo cảm ơn
+function closeThankYou() {
+    document.getElementById('thank-you-modal').style.display = 'none';
+}
+
+// Cập nhật hàm đóng trình xem video để hiện lời chúc
+function closeViewer() {
+    document.getElementById('viewer').style.display = 'none';
+    document.getElementById('view-inside').innerHTML = '';
+    
+    // Đợi 0.5 giây sau khi đóng video thì hiện lời chúc
+    setTimeout(showThankYou, 500);
+}
+
+// Nếu bạn muốn hiện lời chúc khi người dùng quay lại trang chủ sau khi đọc truyện
+const originalGoHome = goHome;
+goHome = function() {
+    const isReading = document.getElementById('comic-embed-area').style.display === 'block';
+    originalGoHome();
+    if(isReading) {
+        setTimeout(showThankYou, 500);
+    }
+};
 
         window.onkeydown = (e) => { if(e.key === "Escape") closeViewer(); };
     </script>
